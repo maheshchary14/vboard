@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class JobPoolService {
@@ -19,6 +20,8 @@ public class JobPoolService {
     private EmailSenderService emailSenderService;
 
     public void recordJobView(Long jobId, String username) {
+        if (jobPoolRepository.existsByJob_IdAndUser_Username(jobId, username))
+            throw new RuntimeException("User has already view the job");
         JobPool jobPool = new JobPool();
         jobPool.setJob(jobService.getJobById(jobId));
         jobPool.setUser(userService.getUserByUsername(username));
@@ -27,12 +30,25 @@ public class JobPoolService {
     }
 
     public void recordJobApplication(Long jobId, String username) {
-        JobPool jobPool = new JobPool();
-        jobPool.setJob(jobService.getJobById(jobId));
-        jobPool.setUser(userService.getUserByUsername(username));
-        jobPool.setViewedAt(new Date());
-        jobPoolRepository.save(jobPool);
+        Optional<JobPool> optionalJobPool = jobPoolRepository.findByJob_IdAndUser_Username(jobId, username);
+        JobPool jobPool;
+        if (optionalJobPool.isPresent()) {
+            if (optionalJobPool.get().getAppliedAt()!=null) {
+                throw new RuntimeException("User has already applied to the job");
+            }
+            else {
+                jobPool = optionalJobPool.get();
+            }
+        }
+        else {
+            jobPool = new JobPool();
 
+            jobPool.setJob(jobService.getJobById(jobId));
+            jobPool.setUser(userService.getUserByUsername(username));
+            jobPool.setViewedAt(new Date());
+        }
+        jobPool.setAppliedAt(new Date());
+        jobPoolRepository.save(jobPool);
         emailSenderService.sendMail(
                 jobPool.getUser().getEmail(),
                 "Job Application Succes",

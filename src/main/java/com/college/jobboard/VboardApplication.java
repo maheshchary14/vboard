@@ -16,13 +16,13 @@ public class VboardApplication {
 		SpringApplication.run(VboardApplication.class, args);
 	}
 
-	@EventListener(ApplicationReadyEvent.class)
-	public void sendMail() {
-		emailSenderService.sendMail(
-				"maheshmacherla14@gmail.com",
-				"test mail",
-				"finally its working mahesh"
-		);
-	}
+//	@EventListener(ApplicationReadyEvent.class)
+//	public void sendMail() {
+//		emailSenderService.sendMail(
+//				"maheshmacherla14@gmail.com",
+//				"test mail",
+//				"finally its working mahesh"
+//		);
+//	}
 
 }
