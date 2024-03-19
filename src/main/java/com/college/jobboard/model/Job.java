@@ -39,4 +39,10 @@ public class Job {
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
 
+    private String status;
+
+    @Column(name = "expiry_date")
+    private Date expiryDate;
+
+    private boolean allowBacklogs;
 }

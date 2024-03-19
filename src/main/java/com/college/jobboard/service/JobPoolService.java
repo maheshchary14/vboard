@@ -1,6 +1,9 @@
 package com.college.jobboard.service;
 
+import com.college.jobboard.model.Job;
 import com.college.jobboard.model.JobPool;
+import com.college.jobboard.model.Student;
+import com.college.jobboard.model.User;
 import com.college.jobboard.repository.JobPoolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,8 @@ public class JobPoolService {
     @Autowired
     private UserService userService;
     @Autowired
+    private StudentService studentService;
+    @Autowired
     private EmailSenderService emailSenderService;
 
     public void recordJobView(Long jobId, String username) {
@@ -29,7 +34,10 @@ public class JobPoolService {
         jobPoolRepository.save(jobPool);
     }
 
-    public void recordJobApplication(Long jobId, String username) {
+    public boolean recordJobApplication(Long jobId, String username) {
+        Job job = jobService.getJobById(jobId);
+        Student student = studentService.getStudentByUsername(username);
+        if (!job.isAllowBacklogs() && student.isBacklogs()) return false;
         Optional<JobPool> optionalJobPool = jobPoolRepository.findByJob_IdAndUser_Username(jobId, username);
         JobPool jobPool;
         if (optionalJobPool.isPresent()) {
@@ -43,8 +51,8 @@ public class JobPoolService {
         else {
             jobPool = new JobPool();
 
-            jobPool.setJob(jobService.getJobById(jobId));
-            jobPool.setUser(userService.getUserByUsername(username));
+            jobPool.setJob(job);
+            jobPool.setUser(student.getUser());
             jobPool.setViewedAt(new Date());
         }
         jobPool.setAppliedAt(new Date());
@@ -54,5 +62,6 @@ public class JobPoolService {
                 "Job Application Succes",
                 "You have successfully applied to the job - " + jobPool.getJob().getTitle()
         );
+        return true;
     }
 }

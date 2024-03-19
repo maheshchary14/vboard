@@ -27,10 +27,11 @@ public class JobsController {
         return jobsFacade.getJob(jobId);
     }
 
-    @GetMapping
-    public ResponseEntity<List<JobResponseDTO>> getAllJobs(@RequestParam(defaultValue = "0") int page,
-                                                           @RequestParam(defaultValue = "10") int size) {
-        return jobsFacade.getAllJobs(page, size);
+    @GetMapping("")
+    public ResponseEntity<List<JobResponseDTO>> getAllJobsByStatus(@RequestParam(defaultValue = "0") int page,
+                                                                   @RequestParam(defaultValue = "10") int size,
+                                                                   @RequestParam(required = false) String status) {
+        return jobsFacade.getAllJobsByStatus(page, size, status);
     }
 
     @PutMapping("/{jobId}")

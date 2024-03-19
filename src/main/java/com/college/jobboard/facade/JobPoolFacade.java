@@ -10,11 +10,12 @@ public class JobPoolFacade {
     @Autowired
     private JobPoolService jobPoolService;
 
-    public void viewJob(Long jobId, String username) {
+    public boolean viewJob(Long jobId, String username) {
         jobPoolService.recordJobView(jobId, username);
+        return true;
     }
 
-    public void applyToJob(Long jobId, String username) {
-        jobPoolService.recordJobApplication(jobId, username);
+    public boolean applyToJob(Long jobId, String username) {
+        return jobPoolService.recordJobApplication(jobId, username);
     }
 }

@@ -33,5 +33,7 @@ public class Student {
     @Column(name = "created_at", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+
+    private boolean backlogs;
 }
 
