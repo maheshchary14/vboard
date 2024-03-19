@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/students")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class StudentsController {
     @Autowired
     private StudentsFacade studentsFacade;

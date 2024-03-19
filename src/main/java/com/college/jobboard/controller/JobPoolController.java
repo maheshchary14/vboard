@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/job-pool")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class JobPoolController {
     @Autowired
     private JobPoolFacade jobPoolFacade;
